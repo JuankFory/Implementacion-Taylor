@@ -1,5 +1,5 @@
-// import { ReactDOM } from "react-dom/client";
-/*import "./Api.css";
+ import { ReactDOM } from "react-dom/client";
+import "./Api.css";
 import React from "react";
 function Api() {
   return (
@@ -35,7 +35,7 @@ function Api() {
 
 }
 export default Api;
-*/
+
 /*
 function Login(){
 
@@ -51,6 +51,7 @@ function Login(){
 }
 export default Login;
 */
+/*
 import React, { useEffect } from 'react';
 
 const IframeComponent = () => {
@@ -89,3 +90,4 @@ const IframeComponent = () => {
 };
 
 export default IframeComponent;
+*/
