@@ -26,20 +26,59 @@ export const fetchDataFromSoapService = async () => {
    '</par:bnkws156>' +
    '</soap:Body>' +
    '</soap:Envelope>';
-
-  try {
-    // Realiza la solicitud SOAP usando axios
-    const response = await axios.post(url, soapEnvelope, {
-      headers: {
-        'Content-Type': 'text/xml',
-      },
-    });    
-    // Extrae los datos de la respuesta SOAP y devuelve el resultado
-    return console.log(JSON.stringify(response)) ;
-    
-  } catch (error) {    
-    console.error("Error al obtener los datos del servicio SOAP:", error);
-    throw error;
-  }
+// Crear la solicitud XMLHttpRequest
+var xhr = new XMLHttpRequest();
+xhr.open('POST', url, true);
+xhr.setRequestHeader('Content-Type', 'text/xml');
+// Manejar la respuesta
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4 && xhr.status === 200) {
+       // La respuesta está en xhr.responseText
+       console.log(xhr.responseText);
+       // Mostrar la respuesta en la tabla
+       //updateTable(xhr.responseText);
+   }
 };
 
+// Enviar la solicitud SOAP
+xhr.send(soapEnvelope);
+
+
+function updateTable(responseText) {
+    //var t01 = jQ('#t01').DataTable(); // Obtén la referencia de DataTable
+
+    // Limpiar la tabla antes de agregar nuevos datos
+    //t01.clear().draw();
+
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(responseText, 'application/xml');
+
+    // Obtener los datos que quieres mostrar en la tabla
+    var listatrnArray = xmlDoc.getElementsByTagName('LIST_OF_LISTATRN');
+
+    // Iterar sobre los elementos LIST_OF_LISTATRN y construir las filas de la tabla
+    for (var i = 0; i < listatrnArray.length; i++) {
+        var rowData = listatrnArray[i].children;
+
+        // Agregar nueva fila a la tabla DataTable
+       /* t01.row.add([
+            rowData[0].textContent,
+            rowData[1].textContent,
+            rowData[2].textContent,
+            rowData[3].textContent,
+            rowData[4].textContent,
+            rowData[5].textContent,
+            rowData[6].textContent,
+            rowData[7].textContent,
+            rowData[8].textContent,
+            rowData[9].textContent,
+            rowData[10].textContent,
+            rowData[11].textContent,
+            rowData[12].textContent		
+	  ]).draw();*/
+    }
+}
+
+}
+
+export default Services;
