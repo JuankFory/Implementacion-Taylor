@@ -11,7 +11,7 @@ const App = () => {
         const soapResponse = await fetchDataFromSoapService();
         // Extrae los datos XML de la respuesta SOAP
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(soapResponse.data, "text/xml");
+        const xmlDoc = parser.parseFromString(soapResponse, "text/xml");
         // Encuentra la lista de transacciones dentro del XML
         const transactionList = xmlDoc.querySelectorAll('LIST_OF_LISTATRN');
         // Procesa los datos de la lista de transacciones y construye una matriz de objetos
@@ -43,7 +43,7 @@ const App = () => {
 
   return (
     <>     
-      <h1 align="center">Datos de Prueba</h1>
+      <h1 align="center">Datos de Prueba React</h1>
       <table id="t01" border="2" className="table table-striped table-hover">
         <thead>
           <tr>
@@ -68,7 +68,7 @@ const App = () => {
           {tableData && tableData.map((rowData, index) => (
             <tr key={index}>
               <td>{rowData.o_AGCORI}</td>
-              <td>{rowData}</td>
+              <td>{rowData.o_AGCORI}</td>
              
             </tr>
           ))}
