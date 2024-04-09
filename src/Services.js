@@ -1,12 +1,10 @@
-// service.js
-
 // Importa la biblioteca necesaria para hacer solicitudes SOAP
-import axios from 'axios';
+//import axios from 'axios';
 
 // Define la función para hacer la solicitud SOAP
 export const fetchDataFromSoapService = async () => {
   const url = "https://servicios.taylor-johnson.co:10105/web/services/parametrizarUrsCanTrnService/parametrizarUrsCanTrn";
-  
+
   const soapEnvelope = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:par="http://parametrizarurscantrn.wsbeans.iseries/">' +
    '<soap:Header/>' +
    '<soap:Body>' +
@@ -28,19 +26,24 @@ export const fetchDataFromSoapService = async () => {
    '</par:bnkws156>' +
    '</soap:Body>' +
    '</soap:Envelope>';
-
-  try {
-    // Realiza la solicitud SOAP usando axios
-    const response = await axios.post(url, soapEnvelope, {
-      headers: {
-        'Content-Type': 'text/xml',
-      },
-    });
-    
-    // Extrae los datos de la respuesta SOAP y devuelve el resultado
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener los datos del servicio SOAP:", error);
-    throw error;
-  }
+// Crear la solicitud XMLHttpRequest
+var xhr = new XMLHttpRequest();
+xhr.open('POST', url, true);
+xhr.setRequestHeader('Content-Type', 'text/xml');
+// Manejar la respuesta
+xhr.onreadystatechange = function () {
+   if (xhr.readyState === 4 && xhr.status === 200) {
+       // La respuesta está en xhr.responseText
+       console.log(JSON.stringify(xhr.responseText));
+       // Mostrar la respuesta en la tabla
+       //updateTable(xhr.responseText);
+   }
 };
+
+// Enviar la solicitud SOAP
+xhr.send(soapEnvelope);
+return xhr.responseText;
+}
+
+
+

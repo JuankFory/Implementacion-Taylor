@@ -1,19 +1,38 @@
-// App.js
 import React, { useState, useEffect } from 'react';
-import { fetchDataFromSoapService } from './service';
-import "./Api.css";
+import { fetchDataFromSoapService } from './Services';
+import "./Api.css"
 
-const Dato = () => {
+const App = () => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    // Cuando el componente se monta, obtén los datos del servicio SOAP
     const fetchData = async () => {
       try {
-        const soapData = await fetchDataFromSoapService();
-        // Procesa los datos según la estructura de tu respuesta SOAP y establece el estado
-        // Aquí asumo que los datos están en soapData.result o en otra propiedad adecuada
-        setTableData(soapData.result);
+        const soapResponse = await fetchDataFromSoapService();
+        // Extrae los datos XML de la respuesta SOAP
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(soapResponse, "text/xml");
+        // Encuentra la lista de transacciones dentro del XML
+        const transactionList = xmlDoc.querySelectorAll('LIST_OF_LISTATRN');
+        // Procesa los datos de la lista de transacciones y construye una matriz de objetos
+        const data = Array.from(transactionList).map(transaction => ({
+          o_AGCORI: transaction.querySelector('o_AGCORI').textContent,
+          o_CODCAJ: transaction.querySelector('o_CODCAJ').textContent,
+          o_CODCAN: transaction.querySelector('o_CODCAN').textContent,
+          o_CODEMP: transaction.querySelector('o_CODEMP').textContent,
+          o_CODOPC: transaction.querySelector('o_CODOPC').textContent,
+          o_CODPRO: transaction.querySelector('o_CODPRO').textContent,
+          o_DESTRN: transaction.querySelector('o_DESTRN').textContent,
+          o_FECING: transaction.querySelector('o_FECING').textContent,
+          o_HORING: transaction.querySelector('o_HORING').textContent,
+          o_TRNCOM: transaction.querySelector('o_TRNCOM').textContent,
+          o_TRNCRE: transaction.querySelector('o_TRNCRE').textContent,
+          o_TRNDEB: transaction.querySelector('o_TRNDEB').textContent,
+          o_USRING: transaction.querySelector('o_USRING').textContent
+        }));
+
+        // Establece los datos en el estado
+        setTableData(data);
       } catch (error) {
         console.error("Error al obtener los datos:", error);
       }
@@ -23,9 +42,8 @@ const Dato = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Tabla de Datos</h1>
-      <h1 align="center">Datos de Prueba</h1>
+    <>     
+      <h1 align="center">Datos de Prueba React</h1>
       <table id="t01" border="2" className="table table-striped table-hover">
         <thead>
           <tr>
@@ -42,21 +60,22 @@ const Dato = () => {
             <th scope="col">TRNCRE</th>
             <th scope="col">TRNDEB</th>
             <th scope="col">USRING</th>
+            <th scope="col">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
-          {/* Mapea los datos para renderizar las filas de la tabla */}
-          {tableData.map((rowData, index) => (
+          {/* Comprueba si tableData está definido antes de hacer el mapeo */}
+          {tableData && tableData.map((rowData, index) => (
             <tr key={index}>
-              <td>{rowData.columna1}</td>
-              <td>{rowData.columna2}</td>
-              {/* Renderiza más celdas según sea necesario */}
+              <td>{rowData.o_AGCORI}</td>
+              <td>{rowData.o_AGCORI}</td>
+             
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };
 
-export default Dato;
+export default App;
